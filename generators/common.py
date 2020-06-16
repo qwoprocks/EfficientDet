@@ -3,8 +3,6 @@ import random
 import warnings
 import cv2
 import importlib
-if importlib.util.find_spec("cupy") is not None:
-    import cupy as cp
 from tensorflow import keras
 
 from utils.anchors import anchors_for_shape, anchor_targets_bbox, AnchorParameters
@@ -284,10 +282,7 @@ class Generator(keras.utils.Sequence):
         """
 
         # preprocess the image
-        if importlib.util.find_spec("cupy") is not None:
-            image, scale = self.preprocess_image_gpu(image)
-        else:
-            image, scale = self.preprocess_image(image)
+        image, scale = self.preprocess_image(image)
 
         # apply resizing to annotations too
         annotations['bboxes'] *= scale
@@ -453,33 +448,6 @@ class Generator(keras.utils.Sequence):
         pad_w = self.image_size - resized_width
         image = np.pad(image, [(0, pad_h), (0, pad_w), (0, 0)], mode='constant')
         return image, scale
-
-    def preprocess_image_gpu(self, image):
-        image_height, image_width = image.shape[:2]
-        if image_height > image_width:
-            scale = self.image_size / image_height
-            resized_height = self.image_size
-            resized_width = int(image_width * scale)
-        else:
-            scale = self.image_size / image_width
-            resized_height = int(image_height * scale)
-            resized_width = self.image_size
-
-        image = cv2.resize(image, (resized_width, resized_height))
-
-        image = cp.array(image) #Numpy to Cupy
-        image = image.astype(np.float32)
-        image /= 255.
-        mean = cp.array([0.485, 0.456, 0.406])
-        std = cp.array([0.229, 0.224, 0.225])
-        image -= mean
-        image /= std
-
-        newimg = cp.zeros((self.image_size,self.image_size,3),dtype=cp.float32)
-        newimg[:image.shape[0],:image.shape[1]:,:] = image
-        newimg = cp.asnumpy(newimg) #Cupy to Numpy
-
-        return newimg, scale
 
     def get_augmented_data(self, group):
         """
