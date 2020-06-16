@@ -362,6 +362,7 @@ def main(args=None):
     elif args.compute_val_loss and validation_generator is None:
         raise ValueError('When you have no validation data, you should not specify --compute-val-loss.')
 
+    print(tf.__version__)
     # start training
     return model.fit(
         x=train_generator,

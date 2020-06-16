@@ -3,6 +3,8 @@ import random
 import warnings
 import cv2
 import importlib
+if importlib.util.find_spec("cupy") is not None:
+    import cupy as cp
 from tensorflow import keras
 
 from utils.anchors import anchors_for_shape, anchor_targets_bbox, AnchorParameters
@@ -283,7 +285,6 @@ class Generator(keras.utils.Sequence):
 
         # preprocess the image
         if importlib.util.find_spec("cupy") is not None:
-            import cupy as cp
             image, scale = self.preprocess_image_gpu(image)
         else:
             image, scale = self.preprocess_image(image)
