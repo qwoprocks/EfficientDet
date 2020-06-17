@@ -353,6 +353,7 @@ def EfficientNet(width_coefficient,
     """
     global backend, layers, models, keras_utils
     backend, layers, models, keras_utils = get_submodules_from_kwargs(kwargs)
+    print(backend.image_data_format())
     features = []
     if not (weights in {'imagenet', None} or os.path.exists(weights)):
         raise ValueError('The `weights` argument should be either '
