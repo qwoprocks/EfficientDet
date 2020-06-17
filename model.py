@@ -428,7 +428,7 @@ def efficientdet(phi, num_classes=20, num_anchors=9, weighted_bifpn=False, freez
     d_head = d_heads[phi]
     backbone_cls = backbones[phi]
     print(tf.keras.backend.image_data_format())
-    features = backbone_cls(input_tensor=np.moveaxis(image_input, -1, 0), freeze_bn=freeze_bn)
+    features = backbone_cls(input_tensor=tf.transpose(image_input, [2, 0, 1]), freeze_bn=freeze_bn)
     print(features)
     #features = np.moveaxis(features, 0, -1)
     if weighted_bifpn:
