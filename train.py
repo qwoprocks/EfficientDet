@@ -33,7 +33,7 @@ from augmentor.color import VisualEffect
 from augmentor.misc import MiscEffect
 from model import efficientdet
 from losses import smooth_l1, focal, smooth_l1_quad
-from efficientnet import BASE_WEIGHTS_PATH, WEIGHTS_HASHES
+from efficientnet import BASE_WEIGHTS_PATH, BASE_WEIGHTS_HASHES, NS_WEIGHTS_PATH, NS_WEIGHTS_HASHES
 
 
 def makedirs(path):
@@ -322,10 +322,11 @@ def main(args=None):
     if args.snapshot:
         if args.snapshot == 'imagenet':
             model_name = 'efficientnet-b{}'.format(args.phi)
-            file_name = '{}_weights_tf_dim_ordering_tf_kernels_autoaugment_notop.h5'.format(model_name)
-            file_hash = WEIGHTS_HASHES[model_name][1]
+            # file_name = '{}_weights_tf_dim_ordering_tf_kernels_autoaugment_notop.h5'.format(model_name)
+            file_name = "{}_noisy-student_notop.h5".format(model_name)
+            file_hash = NS_WEIGHTS_HASHES[model_name][1]
             weights_path = keras.utils.get_file(file_name,
-                                                BASE_WEIGHTS_PATH + file_name,
+                                                NS_WEIGHTS_PATH + file_name,
                                                 cache_subdir='models',
                                                 file_hash=file_hash)
             model.load_weights(weights_path, by_name=True)
