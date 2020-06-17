@@ -267,6 +267,7 @@ def parse_args(args):
     parser.add_argument('--weighted-bifpn', help='Use weighted BiFPN', action='store_true')
 
     parser.add_argument('--batch-size', help='Size of the batches.', default=1, type=int)
+    parser.add_argument('--lr', help='Learning rate', default=1e-3, type=float)
     parser.add_argument('--phi', help='Hyper parameter phi', default=0, type=int, choices=(0, 1, 2, 3, 4, 5, 6))
     parser.add_argument('--gpu', help='Id of the GPU to use (as reported by nvidia-smi).')
     parser.add_argument('--epochs', help='Number of epochs to train.', type=int, default=50)
@@ -342,7 +343,7 @@ def main(args=None):
         model = keras.utils.multi_gpu_model(model, gpus=list(map(int, args.gpu.split(','))))
 
     # compile model
-    model.compile(optimizer=Adam(lr=1e-3), loss={
+    model.compile(optimizer=Adam(lr=args.lr), loss={
         'regression': smooth_l1_quad() if args.detect_quadrangle else smooth_l1(),
         'classification': focal()
     }, )
