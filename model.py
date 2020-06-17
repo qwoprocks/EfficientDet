@@ -420,17 +420,18 @@ def efficientdet(phi, num_classes=20, num_anchors=9, weighted_bifpn=False, freez
                  score_threshold=0.01, detect_quadrangle=False, anchor_parameters=None, separable_conv=True):
     assert phi in range(7)
     input_size = image_sizes[phi]
-    input_shape = (input_size, input_size, 3)
+    if tf.keras.backend.image_data_format() == 'channels_last':
+        input_shape = (input_size, input_size, 3)
+    else:
+        print(tf.keras.backend.image_data_format())
+        input_shape = (3, input_size, input_size)
     image_input = layers.Input(input_shape)
     w_bifpn = w_bifpns[phi]
     d_bifpn = d_bifpns[phi]
     w_head = w_bifpn
     d_head = d_heads[phi]
     backbone_cls = backbones[phi]
-    print(tf.keras.backend.image_data_format())
-    features = backbone_cls(input_tensor=tf.transpose(image_input, [0, 3, 1, 2]), freeze_bn=freeze_bn)
-    print(features)
-    #features = np.moveaxis(features, 0, -1)
+    features = backbone_cls(input_tensor=image_input, freeze_bn=freeze_bn)
     if weighted_bifpn:
         fpn_features = features
         for i in range(d_bifpn):
