@@ -366,9 +366,9 @@ def EfficientNet(width_coefficient,
     global backend, layers, models, keras_utils
     backend, layers, models, keras_utils = get_submodules_from_kwargs(kwargs)
     features = []
-    if not (weights in {'imagenet', None} or os.path.exists(weights)):
+    if not (weights in {'imagenet', 'noisystudent' None} or os.path.exists(weights)):
         raise ValueError('The `weights` argument should be either '
-                         '`None` (random initialization), `imagenet` '
+                         '`None` (random initialization), `imagenet`, `noisystudent` '
                          '(pre-training on ImageNet), '
                          'or the path to the weights file to be loaded.')
 
