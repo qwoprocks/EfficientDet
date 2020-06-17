@@ -293,7 +293,7 @@ def parse_args(args):
 
 
 def main(args=None):
-    #tf.keras.backend.set_image_data_format('channels_first')
+    tf.keras.backend.set_image_data_format('channels_first')
     # parse arguments
     if args is None:
         args = sys.argv[1:]
