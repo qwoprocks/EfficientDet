@@ -447,7 +447,7 @@ class Generator(keras.utils.Sequence):
         pad_h = self.image_size - resized_height
         pad_w = self.image_size - resized_width
         image = np.pad(image, [(0, pad_h), (0, pad_w), (0, 0)], mode='constant')
-        image = np.moveaxis(image, -1, 0)
+        image = np.rollaxis(image, 3, 1)  
         return image, scale
 
     def get_augmented_data(self, group):

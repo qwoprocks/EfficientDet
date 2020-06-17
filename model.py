@@ -423,7 +423,6 @@ def efficientdet(phi, num_classes=20, num_anchors=9, weighted_bifpn=False, freez
     if tf.keras.backend.image_data_format() == 'channels_last':
         input_shape = (input_size, input_size, 3)
     else:
-        print(tf.keras.backend.image_data_format())
         input_shape = (3, input_size, input_size)
     image_input = layers.Input(input_shape)
     w_bifpn = w_bifpns[phi]

@@ -364,6 +364,7 @@ def EfficientNet(width_coefficient,
         raise ValueError('If using `weights` as `"imagenet"` with `include_top`'
                          ' as true, `classes` should be 1000')
 
+    print(backend.image_data_format())
     # Determine proper input shape
     input_shape = _obtain_input_shape(input_shape,
                                       default_size=default_resolution,
