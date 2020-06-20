@@ -150,7 +150,7 @@ def filter_detections(
     def _filter_detections(scores_, labels_):
         # threshold based on score
         # (num_score_keeps, 1)
-        indices_ = tf.where(keras.backend.greater(scores_, 0))
+        indices_ = tf.where(keras.backend.greater(scores_, score_threshold))
 
         if nms:
             # (num_score_keeps, 4)
@@ -174,7 +174,7 @@ def filter_detections(
             # perform NMS
             # filtered_boxes = tf.concat([filtered_boxes[..., 1:2], filtered_boxes[..., 0:1],
             #                             filtered_boxes[..., 3:4], filtered_boxes[..., 2:3]], axis=-1)
-            nms_indices, _ = tf.image.non_max_suppression_with_scores(filtered_boxes, filtered_scores, max_output_size=max_detections, soft_nms_sigma=0.5, score_threshold=score_threshold,
+            nms_indices = tf.image.non_max_suppression(filtered_boxes, filtered_scores, max_output_size=max_detections,
                                                        iou_threshold=nms_threshold)
 
             # filter indices based on NMS
