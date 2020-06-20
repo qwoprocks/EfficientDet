@@ -150,11 +150,11 @@ def filter_detections(
     def _filter_detections(scores_, labels_):
         # threshold based on score
         # (num_score_keeps, 1)
-        #indices_ = tf.where(keras.backend.greater(scores_, score_threshold))
+        indices_ = tf.where(keras.backend.greater(scores_, 0))
 
         if nms:
             # (num_score_keeps, 4)
-            #filtered_boxes = tf.gather_nd(boxes, indices_)
+            filtered_boxes = tf.gather_nd(boxes, indices_)
             # In [4]: scores = np.array([0.1, 0.5, 0.4, 0.2, 0.7, 0.2])
             # In [5]: tf.greater(scores, 0.4)
             # Out[5]: <tf.Tensor: id=2, shape=(6,), dtype=bool, numpy=array([False,  True, False, False,  True, False])>
@@ -169,23 +169,23 @@ def filter_detections(
             # <tf.Tensor: id=15, shape=(2, 1), dtype=float64, numpy=
             # array([[0.5],
             #        [0.7]])>
-            #filtered_scores = keras.backend.gather(scores_, indices_)[:, 0]
+            filtered_scores = keras.backend.gather(scores_, indices_)[:, 0]
 
             # perform NMS
             # filtered_boxes = tf.concat([filtered_boxes[..., 1:2], filtered_boxes[..., 0:1],
             #                             filtered_boxes[..., 3:4], filtered_boxes[..., 2:3]], axis=-1)
-            nms_indices, scores = tf.image.non_max_suppression_with_scores(boxes, scores_, max_output_size=max_detections, soft_nms_sigma=0.5, score_threshold=score_threshold,
+            nms_indices, _ = tf.image.non_max_suppression_with_scores(filtered_boxes, filtered_scores, max_output_size=max_detections, soft_nms_sigma=0.5, score_threshold=score_threshold,
                                                        iou_threshold=nms_threshold)
 
             # filter indices based on NMS
             # (num_score_nms_keeps, 1)
-            #indices_ = keras.backend.gather(indices_, nms_indices)
+            indices_ = keras.backend.gather(indices_, nms_indices)
 
         # add indices to list of all indices
         # (num_score_nms_keeps, )
-        labels_ = tf.gather_nd(labels_, nms_indices)
+        labels_ = tf.gather_nd(labels_, indices_)
         # (num_score_nms_keeps, 2)
-        indices_ = keras.backend.stack([tf.cast(nms_indices, tf.int64), labels_], axis=1)
+        indices_ = keras.backend.stack([indices_[:, 0], labels_], axis=1)
 
         return indices_
 
