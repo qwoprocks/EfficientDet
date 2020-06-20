@@ -185,7 +185,7 @@ def filter_detections(
         # (num_score_nms_keeps, )
         labels_ = tf.gather_nd(labels_, nms_indices)
         # (num_score_nms_keeps, 2)
-        indices_ = keras.backend.stack([nms_indices, labels_], axis=1)
+        indices_ = keras.backend.stack([tf.cast(nms_indices, tf.int32), labels_], axis=1)
 
         return indices_
 
