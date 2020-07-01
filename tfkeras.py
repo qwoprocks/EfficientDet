@@ -1,4 +1,4 @@
-from utils import inject_tfkeras_modules, init_tfkeras_custom_objects
+from .utils import inject_tfkeras_modules, init_tfkeras_custom_objects
 import efficientnet as model
 
 EfficientNetB0 = inject_tfkeras_modules(model.EfficientNetB0)
